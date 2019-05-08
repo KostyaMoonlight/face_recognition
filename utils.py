@@ -6,19 +6,20 @@ import numpy as np
 
 def update_ids(json_data, ids):
         for idx, _id in enumerate(ids):
-                json_data['results'][idx]['faceId'] = _id
+                json_data['results'][idx]['faceId'] = str(_id)
         return json_data
 
-def get_locations(json_data):
+def get_locations(json_data, path):
     locations = []
     img_data = get_faces(json_data)
-    img_path = get_image_path(json_data)
+    img_path = get_image_path(json_data, path)
     img = load_image(img_path)
 
     for face_attributes in img_data:
         #as an input face_encodings got list of face locations
         face_location = [get_face_rectangle(face_attributes, order='css')]
         locations.extend(face_location)
+    
     return locations, img
 
 def get_face_rectangle(face_attributes, order=''):
@@ -45,11 +46,13 @@ def get_faces(json_data):
     #type: dict -> list
     return json_data['results']
 
-def get_image_path(json_data):
+def get_image_path(json_data, path):
     #type: dict -> str
-    img_path= json_data['imgPath']
-    abs_path = os.path.abspath(img_path)
+    img_path= json_data['imgPath'].split('\\')[-1]
+    abs_path = os.path.join(path.replace("labels", "pics") ,img_path)
+    print(abs_path)
     norm_path = os.path.normpath(abs_path)
+    print(norm_path)
     return norm_path
 
 def load_json(path):

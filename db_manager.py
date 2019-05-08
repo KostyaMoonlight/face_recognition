@@ -41,6 +41,7 @@ class DBManager():
     
     def add_user(self, user):
         try: 
+            print(user)
             user = self.clients.insert_one(user)
             return user.inserted_id
         except:

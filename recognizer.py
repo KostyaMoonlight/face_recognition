@@ -1,5 +1,6 @@
 import face_recognition
 import cv2
+import numpy as np
 
 
 class Recognizer():
@@ -20,17 +21,17 @@ class Recognizer():
         return img
 
     def recognaze_face(self, face, face_location):
-        face_encoding = face_recognition.face_encodings(face, face_location)
-        encodings = [enc['encoding'] for enc in self.db_manager.get_encodings()]          
+        face_encoding = face_recognition.face_encodings(face, [face_location])[0]
+        encodings = [enc['encoding'] for enc in self.db_manager.get_encodings()]       
         ids = [enc['_id'] for enc in self.db_manager.get_ids()]
         matches = face_recognition.compare_faces(encodings, face_encoding)
-
+       
         if True in matches:
             first_match_index = matches.index(True)
             _id = ids[first_match_index]
         else:
             _id = self.db_manager.add_user({'encoding':face_encoding.tolist()})
-        return _id, face_encoding   
+        return _id 
 
     def recognize(self, frame):
         '''
