@@ -13,8 +13,11 @@ def get_locations(json_data, path):
     locations = []
     img_data = get_faces(json_data)
     img_path = get_image_path(json_data, path)
-    img = load_image(img_path)
-
+    try:
+        img = load_image(img_path)
+    except:
+        print(f'No {img_path}.')
+        return None
     for face_attributes in img_data:
         #as an input face_encodings got list of face locations
         face_location = [get_face_rectangle(face_attributes, order='css')]
